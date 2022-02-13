@@ -8,10 +8,12 @@ const cols = csvAsCols(csvString);
 
 const rows = transpose(cols);
 
+const headerRow: string[] = rows[0];
+
 const BenchNameIdx = 0;
 const JobVersionIdx = 1;
-const MaxItemsIdx = 43;
-const MeanTimeIdx = 44;
+const MaxItemsIdx = headerRow.indexOf('MaxItems');
+const MeanTimeIdx = headerRow.indexOf('Mean');
 
 const benchNames = [...new Set(cols[BenchNameIdx])];
 
@@ -27,8 +29,9 @@ const benchMeanTimes = rows
         return accum; 
     }, {} as { [key: string]: number[] });
 
-const maxItems = [...new Set(cols[MaxItemsIdx].slice(1))].sort();
-
+const maxItems = MaxItemsIdx != -1
+    ? [...new Set(cols[MaxItemsIdx].slice(1))].sort()
+    : ['All'];
 
 const dataCols = [
     ['x', ...maxItems],
@@ -45,6 +48,7 @@ setTimeout(() => {
             x: 'x',
             columns: dataCols,
             type: 'bar',
+            order: null,
         },
         axis: {
             x: {
