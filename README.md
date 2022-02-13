@@ -1,5 +1,5 @@
 
-# dotnetperf-svelts
+# dotnetperf-svelte
 
 A simple site for displaying benchmarks, particularly those from [BenchmarkDotNet][benchmarkdotnet].
 
