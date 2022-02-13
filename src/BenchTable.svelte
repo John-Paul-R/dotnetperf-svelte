@@ -16,26 +16,24 @@ export let rowsToRender: string[][] = [];
 
 </script>
 
-<main>
-    <div id="table">
-        <table>
-            <thead>
-                {#each headerRow as colHead}
-                <th>{colHead}</th>
-                {/each}
-            </thead>
-            <tbody>
-                {#each [...rowsToRender] as row}
-                    <tr>
-                        {#each row as el}
-                            <td>{el}</td>
-                        {/each}
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
-    </div>
-</main>
+<div id="table">
+    <table>
+        <thead>
+            {#each headerRow as colHead}
+            <th>{colHead}</th>
+            {/each}
+        </thead>
+        <tbody>
+            {#each [...rowsToRender] as row}
+                <tr>
+                    {#each row as el}
+                        <td>{el}</td>
+                    {/each}
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>
 
 <style>   
     table {
