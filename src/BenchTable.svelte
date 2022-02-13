@@ -15,7 +15,7 @@ const MaxItemsIdx = fullHeaderRow.indexOf('MaxItems');
 const MeanTimeIdx = fullHeaderRow.indexOf('Mean');
 
 const getEndRowIdx = (header: string[]) => {
-    const endStatsRows = ['Gen 2', 'Gen 1', 'Gen 0', 'StdDev'];
+    const endStatsRows = ['Allocated', 'Gen 2', 'Gen 1', 'Gen 0', 'StdDev'];
 
     for (const headName of endStatsRows) {
         const idx = header.indexOf(headName);
