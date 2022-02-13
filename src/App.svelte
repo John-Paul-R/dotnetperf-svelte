@@ -1,5 +1,6 @@
 <script lang='ts'>
 import BenchBarChart from "./BenchBarChart.svelte";
+import BenchmarkIndex from "./BenchmarkIndex.svelte";
 import BenchTable from "./BenchTable.svelte";
 const urlParams = new URLSearchParams(window.location.search);
 const hasSpecifiedBenchmark = urlParams.has('bench');
@@ -31,4 +32,6 @@ fetch(new Request(
 	{:else}
 		No benchmark with id '{benchmarkId}' found.
 	{/if}
+
+	<BenchmarkIndex/>
 </main>
