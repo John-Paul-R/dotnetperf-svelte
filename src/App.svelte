@@ -1,4 +1,5 @@
 <script lang='ts'>
+import BenchBarChart from "./BenchBarChart.svelte";
 import BenchTable from "./BenchTable.svelte";
 const urlParams = new URLSearchParams(window.location.search);
 const hasSpecifiedBenchmark = urlParams.has('bench');
@@ -22,6 +23,7 @@ fetch(new Request(
 		{#if !csvString}
 			Loading benchmark data...
 		{:else}
+			<BenchBarChart {csvString}/>
 			<BenchTable {csvString}/>
 		{/if}
 	{:else if hasSpecifiedBenchmark === false}
