@@ -1,5 +1,5 @@
 <script lang="ts">
-import { csvAsCols, filterCols, transpose } from "./csv_parse";
+import { csvAsCols, filterCols, transpose } from './csv_parse';
 export let csvString: string;
 export let headerRow: string[] = [];
 export let rowsToRender: string[][] = [];
@@ -20,14 +20,14 @@ const getEndRowIdx = (header: string[]) => {
     for (const headName of endStatsRows) {
         const idx = header.indexOf(headName);
         if (idx !== -1) {
-            return idx; 
-        } 
+            return idx;
+        }
     }
-    throw new Error("Could not find a valid end stats row.");
+    throw new Error('Could not find a valid end stats row.');
 };
 
 const range = (start: number, end: number) =>
-    Array((end+1)-start)
+    Array(end + 1 - start)
         .fill(null)
         .map((_, i) => start + i);
 
@@ -35,23 +35,22 @@ const range = (start: number, end: number) =>
     const filteredCols = filterCols(cols, [
         BenchNameIdx,
         JobVersionIdx,
-        MaxItemsIdx, 
+        MaxItemsIdx,
         ...range(MeanTimeIdx, getEndRowIdx(fullHeaderRow)),
     ]);
-    
+
     const filteredRows = transpose(filteredCols);
 
     rowsToRender = filteredRows.slice(1);
     headerRow = filteredRows[0];
 }
-
 </script>
 
 <div id="table">
     <table>
         <thead>
             {#each headerRow as colHead}
-            <th>{colHead}</th>
+                <th>{colHead}</th>
             {/each}
         </thead>
         <tbody>
@@ -66,15 +65,17 @@ const range = (start: number, end: number) =>
     </table>
 </div>
 
-<style>   
-    table {
-        font-family: 'Courier New', Courier, monospace;
-        border-collapse: collapse;
-    }
-    td, th {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-    tr:nth-child(even){background-color: #f2f2f2;}
-
+<style>
+table {
+    font-family: 'Courier New', Courier, monospace;
+    border-collapse: collapse;
+}
+td,
+th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
 </style>

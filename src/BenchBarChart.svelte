@@ -22,25 +22,30 @@ const parseUnitNum = (timeStr: string) =>
 
 const benchMeanTimes = rows
     .slice(1)
-    .map<[string, number]>(row => ([row[BenchNameIdx], parseUnitNum(row[MeanTimeIdx])]))
+    .map<[string, number]>((row) => [
+        row[BenchNameIdx],
+        parseUnitNum(row[MeanTimeIdx]),
+    ])
     .reduce((accum, current) => {
         const [benchName, benchVal] = current;
         (accum[benchName] = accum[benchName] ?? []).push(benchVal);
-        return accum; 
+        return accum;
     }, {} as { [key: string]: number[] });
 
-const maxItems = MaxItemsIdx != -1
-    ? [...new Set(cols[MaxItemsIdx].slice(1))].sort()
-    : ['All'];
+const maxItems =
+    MaxItemsIdx != -1
+        ? [...new Set(cols[MaxItemsIdx].slice(1))].sort()
+        : ['All'];
 
 const dataCols = [
     ['x', ...maxItems],
-    ...Object.entries(benchMeanTimes)
-        .map(([benchName, benchData]) => ([benchName, ...benchData]))
+    ...Object.entries(benchMeanTimes).map(([benchName, benchData]) => [
+        benchName,
+        ...benchData,
+    ]),
 ];
 
 console.log(dataCols);
-
 
 setTimeout(() => {
     c3.generate({
@@ -52,8 +57,8 @@ setTimeout(() => {
         },
         axis: {
             x: {
-                type: 'category' // this is needed to load string x value
-            }
+                type: 'category', // this is needed to load string x value
+            },
         },
     });
 
@@ -80,13 +85,10 @@ setTimeout(() => {
     //         }
     //     },
     // });
-
 }, 0);
-
 </script>
 
-<div id="chart"></div>
+<div id="chart" />
 
 <style>
-
 </style>
