@@ -28,7 +28,10 @@ fetch(
         {#if !csvString}
             Loading benchmark data...
         {:else}
-            <BenchBarChart {csvRows} />
+            <BenchBarChart {csvRows} dataColName="Mean" />
+            {#if csvRows[0].includes('Allocated')}
+                <BenchBarChart {csvRows} dataColName="Allocated" />
+            {/if}
             <BenchTable {csvRows} />
         {/if}
     {:else if hasSpecifiedBenchmark === false}
@@ -39,3 +42,11 @@ fetch(
 
     <BenchmarkIndex />
 </main>
+
+<style>
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+</style>

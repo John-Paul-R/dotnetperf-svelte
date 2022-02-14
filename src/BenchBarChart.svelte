@@ -3,9 +3,23 @@ import * as c3 from 'c3';
 import { transpose } from './csv_parse';
 import { parseUnitNum } from './util';
 
+type DataColName = 'Mean' | 'Median' | 'Allocated';
 export let csvRows: string[][];
+export let dataColName: DataColName;
 
-const rows = csvRows;
+const colNameToDisplayName: { [key in DataColName]: string } = {
+    Mean: 'Mean Time',
+    Median: 'Median Time',
+    Allocated: 'Allocated Memory',
+};
+
+if (!dataColName) {
+    throw new Error(
+        `BenchBarChart: dataColName is required, but was '${dataColName}'.`
+    );
+}
+
+const rows = [...[...csvRows]];
 const cols = transpose(rows);
 
 const headerRow: string[] = rows[0];
@@ -13,7 +27,9 @@ const headerRow: string[] = rows[0];
 const BenchNameIdx = 0;
 const JobVersionIdx = 1;
 const MaxItemsIdx = headerRow.indexOf('MaxItems');
-const MeanTimeIdx = headerRow.indexOf('Mean');
+const MeanTimeIdx = headerRow.indexOf(dataColName);
+
+let chart: HTMLDivElement;
 
 const benchMeanTimes = rows
     .slice(1)
@@ -44,6 +60,9 @@ console.log(dataCols);
 
 setTimeout(() => {
     c3.generate({
+        title: {
+            text: colNameToDisplayName[dataColName],
+        },
         data: {
             x: 'x',
             columns: dataCols,
@@ -55,6 +74,7 @@ setTimeout(() => {
                 type: 'category', // this is needed to load string x value
             },
         },
+        bindto: chart,
     });
 
     // groups are by size (variable)
@@ -83,7 +103,10 @@ setTimeout(() => {
 }, 0);
 </script>
 
-<div id="chart" />
+<div class="chart" bind:this={chart} />
 
 <style>
+.chart {
+    border: 1px solid grey;
+}
 </style>
