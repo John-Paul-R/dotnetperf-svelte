@@ -1,12 +1,12 @@
 <script lang="ts">
 import * as c3 from 'c3';
-import { csvAsCols, transpose } from './csv_parse';
+import { transpose } from './csv_parse';
+import { parseUnitNum } from './util';
 
-export let csvString: string;
+export let csvRows: string[][];
 
-const cols = csvAsCols(csvString);
-
-const rows = transpose(cols);
+const rows = csvRows;
+const cols = transpose(rows);
 
 const headerRow: string[] = rows[0];
 
@@ -14,11 +14,6 @@ const BenchNameIdx = 0;
 const JobVersionIdx = 1;
 const MaxItemsIdx = headerRow.indexOf('MaxItems');
 const MeanTimeIdx = headerRow.indexOf('Mean');
-
-const benchNames = [...new Set(cols[BenchNameIdx])];
-
-const parseUnitNum = (timeStr: string) =>
-    Number(timeStr.substring(0, timeStr.length - 3));
 
 const benchMeanTimes = rows
     .slice(1)

@@ -1,37 +1,41 @@
-<script lang='ts'>
-import BenchBarChart from "./BenchBarChart.svelte";
-import BenchmarkIndex from "./BenchmarkIndex.svelte";
-import BenchTable from "./BenchTable.svelte";
+<script lang="ts">
+import BenchBarChart from './BenchBarChart.svelte';
+import BenchmarkIndex from './BenchmarkIndex.svelte';
+import BenchTable from './BenchTable.svelte';
+import { csvAsRows } from './csv_parse';
 const urlParams = new URLSearchParams(window.location.search);
 const hasSpecifiedBenchmark = urlParams.has('bench');
 
 export let benchmarkId = urlParams.get('bench');
 
 let csvString: string;
-fetch(new Request(
+let csvRows: string[][];
+fetch(
+    new Request(
         `https://static.jpcode.dev/benchmarks/dotnet/${benchmarkId}.Bench-report.csv`,
         {
-        method: 'GET',
-    }))
-    .then(async (data) => {
-        csvString = await data.text();
-    });
-
+            method: 'GET',
+        }
+    )
+).then(async (data) => {
+    csvString = await data.text();
+    csvRows = csvAsRows(csvString);
+});
 </script>
 
 <main>
-	{#if hasSpecifiedBenchmark}
-		{#if !csvString}
-			Loading benchmark data...
-		{:else}
-			<BenchBarChart {csvString}/>
-			<BenchTable {csvString}/>
-		{/if}
-	{:else if hasSpecifiedBenchmark === false}
-		No benchmark id present in query string.
-	{:else}
-		No benchmark with id '{benchmarkId}' found.
-	{/if}
+    {#if hasSpecifiedBenchmark}
+        {#if !csvString}
+            Loading benchmark data...
+        {:else}
+            <BenchBarChart {csvRows} />
+            <BenchTable {csvRows} />
+        {/if}
+    {:else if hasSpecifiedBenchmark === false}
+        No benchmark id present in query string.
+    {:else}
+        No benchmark with id '{benchmarkId}' found.
+    {/if}
 
-	<BenchmarkIndex/>
+    <BenchmarkIndex />
 </main>

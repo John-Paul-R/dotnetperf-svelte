@@ -1,11 +1,12 @@
 <script lang="ts">
-import { csvAsCols, filterCols, transpose } from './csv_parse';
-export let csvString: string;
-export let headerRow: string[] = [];
-export let rowsToRender: string[][] = [];
+import { getEndRowIdx } from './bench_csv';
 
-const cols = csvAsCols(csvString);
-const rows = transpose(cols);
+import { filterCols, transpose } from './csv_parse';
+import { range } from './util';
+export let csvRows: string[][];
+
+const rows = csvRows;
+const cols = transpose(rows);
 
 const fullHeaderRow = rows[0];
 
@@ -14,23 +15,8 @@ const JobVersionIdx = 1;
 const MaxItemsIdx = fullHeaderRow.indexOf('MaxItems');
 const MeanTimeIdx = fullHeaderRow.indexOf('Mean');
 
-const getEndRowIdx = (header: string[]) => {
-    const endStatsRows = ['Allocated', 'Gen 2', 'Gen 1', 'Gen 0', 'StdDev'];
-
-    for (const headName of endStatsRows) {
-        const idx = header.indexOf(headName);
-        if (idx !== -1) {
-            return idx;
-        }
-    }
-    throw new Error('Could not find a valid end stats row.');
-};
-
-const range = (start: number, end: number) =>
-    Array(end + 1 - start)
-        .fill(null)
-        .map((_, i) => start + i);
-
+let headerRowToRender: string[] = [];
+let rowsToRender: string[][] = [];
 {
     const filteredCols = filterCols(cols, [
         BenchNameIdx,
@@ -42,14 +28,14 @@ const range = (start: number, end: number) =>
     const filteredRows = transpose(filteredCols);
 
     rowsToRender = filteredRows.slice(1);
-    headerRow = filteredRows[0];
+    headerRowToRender = filteredRows[0];
 }
 </script>
 
 <div id="table">
     <table>
         <thead>
-            {#each headerRow as colHead}
+            {#each headerRowToRender as colHead}
                 <th>{colHead}</th>
             {/each}
         </thead>
