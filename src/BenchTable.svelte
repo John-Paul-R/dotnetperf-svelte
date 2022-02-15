@@ -62,6 +62,6 @@ th {
     padding: 8px;
 }
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: var(--color-base-2);
 }
 </style>

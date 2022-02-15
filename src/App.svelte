@@ -23,30 +23,81 @@ fetch(
 });
 </script>
 
-<main>
-    {#if hasSpecifiedBenchmark}
-        {#if !csvString}
-            Loading benchmark data...
-        {:else}
-            <BenchBarChart {csvRows} dataColName="Mean" />
-            {#if csvRows[0].includes('Allocated')}
-                <BenchBarChart {csvRows} dataColName="Allocated" />
-            {/if}
-            <BenchTable {csvRows} />
-        {/if}
-    {:else if hasSpecifiedBenchmark === false}
-        No benchmark id present in query string.
-    {:else}
-        No benchmark with id '{benchmarkId}' found.
-    {/if}
+<div id="page_container">
+    <header>
+        <nav
+            id="navbar"
+            role="menubar"
+            aria-label="jpcode.dev"
+            aria-owns="title_link"
+        >
+            <div>
+                <button
+                    class="dropdown_sc-button reset_button benchmarks_button"
+                    id="site_sections-btn"
+                    role="menuitem"
+                    aria-haspopup="true"
+                    aria-label="Site Sections"
+                >
+                    Benchmarks
+                    <span class="material-icons"> arrow_drop_down </span>
+                </button>
+                <BenchmarkIndex asDropdown />
+            </div>
+            <div>
+                <h4>
+                    <div id="title_link">
+                        <a
+                            class="homelink"
+                            href="https://www.jpcode.dev"
+                            role="menuitem"
+                        >
+                            <span class="material-icons">code</span> Projects</a
+                        >
+                    </div>
+                    by<a href="https://github.com/John-Paul-R">JP</a>
+                </h4>
+            </div>
+            <div class="end flex row">
+                <button class="swap_palette button" role="menuitem"
+                    ><span class="text">Theme</span><span class="material-icons"
+                        >style</span
+                    ></button
+                >
+            </div>
+        </nav>
+    </header>
 
-    <BenchmarkIndex />
-</main>
+    <main id="content_main">
+        {#if hasSpecifiedBenchmark}
+            {#if !csvString}
+                Loading benchmark data...
+            {:else}
+                <BenchBarChart {csvRows} dataColName="Mean" />
+                {#if csvRows[0].includes('Allocated')}
+                    <BenchBarChart {csvRows} dataColName="Allocated" />
+                {/if}
+                <BenchTable {csvRows} />
+            {/if}
+        {:else if hasSpecifiedBenchmark === false}
+            No benchmark id present in query string.
+            <BenchmarkIndex />
+        {:else}
+            No benchmark with id '{benchmarkId}' found.
+            <BenchmarkIndex />
+        {/if}
+    </main>
+</div>
 
 <style>
 main {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+.benchmarks_button {
+    display: flex;
+    font-weight: 500;
+    margin-left: 8px;
 }
 </style>
