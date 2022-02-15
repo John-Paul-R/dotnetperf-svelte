@@ -58,7 +58,7 @@ table {
 }
 td,
 th {
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-base-1);
     padding: 8px;
 }
 tr:nth-child(even) {
