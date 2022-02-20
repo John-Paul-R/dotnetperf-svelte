@@ -1,22 +1,6 @@
-<script context="module" lang="ts">
-export type DataColName = 'Mean' | 'Median' | 'Allocated';
-export enum BarChartDisplayMode {
-    Absolute,
-    Relative,
-}
-export const maxDisplayModeIdx = Object.keys(BarChartDisplayMode).length;
-/**
- * @param en The enum (type)
- * @param current The current enum value
- */
-export function cycleEnumValues<T>(en: T, current: number) {
-    return current + 1 >= Object.keys(en).length / 2 ? 0 : current + 1;
-}
-cycleEnumValues(BarChartDisplayMode, BarChartDisplayMode.Absolute);
-</script>
-
 <script lang="ts">
 import * as c3 from 'c3';
+import { BarChartDisplayMode, DataColName } from './BenchBarChart.types';
 import { transpose } from './csv_parse';
 import { parseUnitNum } from './util';
 
@@ -148,6 +132,7 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
                 return dataCols;
             case BarChartDisplayMode.Relative:
                 return buildDataCols();
+            default:
                 throw new Error('BarChartDisplayMode out of range.');
         }
     })();
@@ -156,6 +141,7 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
         data: {
             // @ts-expect-error It seems that c3 has the wrong type expectation here.
             keys: dataCols.map((arr) => arr[0]),
+            // @ts-expect-error It seems that c3 has the wrong type expectation here.
             rows: (() => {
                 // Maps data cols to 'rows' format that c3 expects here. (columns was erroring for reasons I could not determine)
                 const entries = renderData.map((arr) =>
@@ -170,7 +156,9 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
                     }
                     remapped.push(rowThing);
                 }
-                return remapped.map(Object.fromEntries);
+                return remapped.map<{ [key: string]: number }[]>(
+                    Object.fromEntries
+                );
             })(),
         },
     });

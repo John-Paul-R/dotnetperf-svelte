@@ -2,12 +2,21 @@
 let filesList: string[];
 export let asDropdown = false;
 
+const isContentfulStringArray = (val: unknown): val is string[] =>
+    Array.isArray(val) && typeof val[0] === 'string';
+
 fetch('https://static.jpcode.dev/benchmarks/dotnet/files.json', {
     method: 'GET',
-}).then(async (data) => {
-    filesList = await data.json();
-    console.log(filesList);
-});
+})
+    .then(async (data) => {
+        const temp = (await data.json()) as unknown;
+        if (!isContentfulStringArray(temp)) {
+            throw new Error('Returned data was not a string[].');
+        }
+        filesList = temp;
+        console.log(filesList);
+    })
+    .catch(console.error);
 </script>
 
 <div class={asDropdown ? 'dropdown_sc-wrapper' : ''} id="site_sections">

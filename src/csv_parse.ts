@@ -30,12 +30,12 @@ export function colsAsCsv(cols: string[][]) {
     return csv;
 }
 
-export function transpose(matrix: any[][]) {
+export function transpose<T>(matrix: T[][]) {
     const rows = matrix.length,
         cols = matrix[0].length;
-    const grid = [];
+    const grid: T[][] = [];
     for (let j = 0; j < cols; j++) {
-        grid[j] = Array(rows);
+        grid[j] = Array<T>(rows);
     }
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {

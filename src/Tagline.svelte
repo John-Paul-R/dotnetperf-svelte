@@ -48,22 +48,24 @@ fetch(
             method: 'GET',
         }
     )
-).then(async (data) => {
-    const csv = await data.text();
-    const cols = csvAsCols(csv);
-    const filteredCols = filterCols(cols, [0, 1, 42, 43, 44, 45, 46, 47]);
-    const filteredColsAsCsv = colsAsCsv(filteredCols);
-    rowsToRender = csvAsRows(filteredColsAsCsv);
-    console.log(filteredCols);
-    console.log(filteredColsAsCsv);
-    console.log(csv);
-    console.log(rowsToRender);
-    // csv_string_to_table(colsAsCsv(filteredCols), document.getElementById('table'));
-});
+)
+    .then(async (data) => {
+        const csv = await data.text();
+        const cols = csvAsCols(csv);
+        const filteredCols = filterCols(cols, [0, 1, 42, 43, 44, 45, 46, 47]);
+        const filteredColsAsCsv = colsAsCsv(filteredCols);
+        rowsToRender = csvAsRows(filteredColsAsCsv);
+        console.log(filteredCols);
+        console.log(filteredColsAsCsv);
+        console.log(csv);
+        console.log(rowsToRender);
+        // csv_string_to_table(colsAsCsv(filteredCols), document.getElementById('table'));
+    })
+    .catch(console.error);
 
 let repeatedDivs = Array(getNumber(10))
     .fill(0)
-    .map((el) => 'div text');
+    .map(() => 'div text');
 </script>
 
 <main>

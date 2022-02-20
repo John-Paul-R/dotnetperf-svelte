@@ -1,5 +1,5 @@
 <script lang="ts">
-import { BarChartDisplayMode } from './BenchBarChart.svelte';
+import { BarChartDisplayMode } from './BenchBarChart.types';
 import BenchmarkIndex from './BenchmarkIndex.svelte';
 import BenchTable from './BenchTable.svelte';
 import ChartContainer from './ChartContainer.svelte';
@@ -11,19 +11,21 @@ export let benchmarkId = urlParams.get('bench');
 
 let csvString: string;
 let csvRows: string[][];
-fetch(
-    new Request(
-        `https://static.jpcode.dev/benchmarks/dotnet/${benchmarkId}.Bench-report.csv`,
-        {
-            method: 'GET',
-        }
+$: if (benchmarkId) {
+    fetch(
+        new Request(
+            `https://static.jpcode.dev/benchmarks/dotnet/${benchmarkId}.Bench-report.csv`,
+            {
+                method: 'GET',
+            }
+        )
     )
-)
-    .then(async (data) => {
-        csvString = await data.text();
-        csvRows = csvAsRows(csvString);
-    })
-    .catch(console.error);
+        .then(async (data) => {
+            csvString = await data.text();
+            csvRows = csvAsRows(csvString);
+        })
+        .catch(console.error);
+}
 </script>
 
 <div id="page_container">

@@ -1,9 +1,10 @@
 <script lang="ts">
-import BenchBarChart, {
+import BenchBarChart from './BenchBarChart.svelte';
+import {
     BarChartDisplayMode,
     cycleEnumValues,
     DataColName,
-} from './BenchBarChart.svelte';
+} from './BenchBarChart.types';
 
 export let csvRows: string[][];
 export let dataColName: DataColName;
@@ -16,7 +17,7 @@ $: activeDisplaymode =
 let cycleDisplay = () => {
     internalDisplayMode = cycleEnumValues(
         BarChartDisplayMode,
-        activeDisplaymode
+        activeDisplaymode as number
     );
 };
 </script>
