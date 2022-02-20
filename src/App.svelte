@@ -1,7 +1,8 @@
 <script lang="ts">
-import BenchBarChart from './BenchBarChart.svelte';
+import BenchBarChart, { BarChartDisplayMode } from './BenchBarChart.svelte';
 import BenchmarkIndex from './BenchmarkIndex.svelte';
 import BenchTable from './BenchTable.svelte';
+import ChartContainer from './ChartContainer.svelte';
 import { csvAsRows } from './csv_parse';
 const urlParams = new URLSearchParams(window.location.search);
 const hasSpecifiedBenchmark = urlParams.has('bench');
@@ -73,9 +74,17 @@ fetch(
             {#if !csvString}
                 Loading benchmark data...
             {:else}
-                <BenchBarChart {csvRows} dataColName="Mean" />
+                <ChartContainer
+                    {csvRows}
+                    initialDisplayMode={BarChartDisplayMode.Absolute}
+                    dataColName="Mean"
+                />
                 {#if csvRows[0].includes('Allocated')}
-                    <BenchBarChart {csvRows} dataColName="Allocated" />
+                    <ChartContainer
+                        {csvRows}
+                        initialDisplayMode={BarChartDisplayMode.Absolute}
+                        dataColName="Allocated"
+                    />
                 {/if}
                 <BenchTable {csvRows} />
             {/if}

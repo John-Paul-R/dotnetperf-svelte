@@ -1,11 +1,28 @@
+<script context="module" lang="ts">
+export type DataColName = 'Mean' | 'Median' | 'Allocated';
+export enum BarChartDisplayMode {
+    Absolute,
+    Relative,
+}
+export const maxDisplayModeIdx = Object.keys(BarChartDisplayMode).length;
+/**
+ * @param en The enum (type)
+ * @param current The current enum value
+ */
+export function cycleEnumValues<T>(en: T, current: number) {
+    return current + 1 >= Object.keys(en).length / 2 ? 0 : current + 1;
+}
+cycleEnumValues(BarChartDisplayMode, BarChartDisplayMode.Absolute);
+</script>
+
 <script lang="ts">
 import * as c3 from 'c3';
 import { transpose } from './csv_parse';
 import { parseUnitNum } from './util';
 
-type DataColName = 'Mean' | 'Median' | 'Allocated';
 export let csvRows: string[][];
 export let dataColName: DataColName;
+export let displayMode: BarChartDisplayMode;
 
 const colNameToDisplayName: { [key in DataColName]: string } = {
     Mean: 'Mean Time',
@@ -19,7 +36,7 @@ if (!dataColName) {
     );
 }
 
-const rows = [...[...csvRows]];
+const rows = csvRows;
 const cols = transpose(rows);
 
 const headerRow: string[] = rows[0];
@@ -60,7 +77,6 @@ const buildDataCols = () => {
             ([benchName, benchData]) => [benchName, ...benchData]
         ),
     ];
-    console.log('one', data);
     for (let i = 1; i < data[0].length; i++) {
         let maxInSet = -1;
         for (let j = 0; j < data.length; j++) {
@@ -73,7 +89,6 @@ const buildDataCols = () => {
             data[j][i] = ((data[j][i] as number) * multiplier) / maxVal; // out of 1
         }
     }
-    console.log('two', data);
 
     return [['x', ...maxItems], ...data];
 };
@@ -90,92 +105,83 @@ let dataToRender = dataCols;
 let absoluteDisplayMode = true;
 
 console.log(dataCols);
-
-setTimeout(() => {
-    var chartApi = c3.generate({
-        title: {
-            text: colNameToDisplayName[dataColName],
-        },
-        data: {
-            x: 'x',
-            columns: dataToRender,
-            type: 'bar',
-            order: null,
-        },
-        axis: {
-            x: {
-                type: 'category', // this is needed to load string x value
+var chartApi: c3.ChartAPI;
+if (!chartApi) {
+    setTimeout(() => {
+        chartApi = c3.generate({
+            title: {
+                text: colNameToDisplayName[dataColName],
             },
-        },
-        bindto: chart,
-        zoom: {
-            type: 'drag',
-        },
-        legend: {
-            item: {
-                onclick: (id) => {
-                    console.log(id);
-                    console.log(benchMeanTimes[id]);
-                    absoluteDisplayMode = !absoluteDisplayMode;
-                    const renderData = absoluteDisplayMode
-                        ? dataCols
-                        : buildDataCols();
-
-                    chartApi.load({
-                        data: {
-                            keys: dataCols.map((arr) => arr[0]),
-                            rows: (() => {
-                                const entries = renderData.map((arr) =>
-                                    arr
-                                        .slice(1)
-                                        .map((dataEl) => [arr[0], dataEl])
-                                );
-                                console.log('entries', entries);
-                                const remapped = [];
-
-                                for (let i = 0; i < entries[0].length; i++) {
-                                    const rowThing = [];
-                                    for (let j = 0; j < entries.length; j++) {
-                                        rowThing.push(entries[j][i]);
-                                    }
-                                    remapped.push(rowThing);
-                                }
-                                console.log('remapped', remapped);
-                                return remapped.map(Object.fromEntries);
-                            })(),
-                        },
-                    });
+            data: {
+                x: 'x',
+                columns: dataToRender,
+                type: 'bar',
+                order: null,
+            },
+            axis: {
+                x: {
+                    type: 'category', // this is needed to load string x value
                 },
             },
+            bindto: chart,
+            zoom: {
+                type: 'drag',
+            },
+            legend: {
+                item: {
+                    // onclick:
+                },
+            },
+        });
+        setTimeout(() => {
+            updateRenderDataByDisplayMode(displayMode);
+            // chartApi.resize();
+        }, 0);
+    }, 0);
+}
+
+const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
+    if (!chartApi) {
+        return;
+    }
+    const renderData = (() => {
+        switch (displayMode) {
+            case BarChartDisplayMode.Absolute:
+                return dataCols;
+            case BarChartDisplayMode.Relative:
+                return buildDataCols();
+                defaut: throw new Error('BarChartDisplayMode out of range.');
+        }
+    })();
+
+    chartApi.load({
+        data: {
+            keys: dataCols.map((arr) => arr[0]),
+            rows: (() => {
+                // Maps data cols to 'rows' format that c3 expects here. (columns was erroring for reasons I could not determine)
+                const entries = renderData.map((arr) =>
+                    arr.slice(1).map((dataEl) => [arr[0], dataEl])
+                );
+                const remapped = [];
+
+                for (let i = 0; i < entries[0].length; i++) {
+                    const rowThing = [];
+                    for (let j = 0; j < entries.length; j++) {
+                        rowThing.push(entries[j][i]);
+                    }
+                    remapped.push(rowThing);
+                }
+                return remapped.map(Object.fromEntries);
+            })(),
         },
     });
+    console.log('Rerender!');
+    // Handles necessary resizing after data update (idk why needed, but trust)
+    // This is done via setTimeout to allow the normal "data update" animation to play out.
+    setTimeout(() => chartApi.resize());
+};
 
-    // chartApi.zoom.enable(true);
-
-    // groups are by size (variable)
-    // bars are by collection type (benchmark name/id)
-
-    // var full = [
-    //     ['x', 'Tier I', 'Tier II', 'Tier III'],
-    //     ['Apr 2015', 6, 13, 4],
-    //     ['May 2015', 3, 3, 5],
-    //     ['Jun 2015', 61, 0, 4],
-    //     ['Jul 2015', 4, 0, 8]
-    // ];
-
-    // var chart = c3.generate({
-    //     data: {
-    //         x : 'x',
-    //         columns: full,
-    //         type: 'bar',
-    //     },
-    //     axis: {
-    //         x: {
-    //             type: 'category' // this is needed to load string x value
-    //         }
-    //     },
-    // });
-}, 0);
+$: updateRenderDataByDisplayMode(displayMode);
 </script>
 
 <div class="chart" bind:this={chart} />
