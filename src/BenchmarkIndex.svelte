@@ -13,7 +13,7 @@ fetch('https://static.jpcode.dev/benchmarks/dotnet/files.json', {
         if (!isContentfulStringArray(temp)) {
             throw new Error('Returned data was not a string[].');
         }
-        filesList = temp;
+        filesList = temp.sort((a, b) => a.localeCompare(b));
         console.log(filesList);
     })
     .catch(console.error);
