@@ -4,4 +4,4 @@ export const range = (start: number, end: number) =>
         .map((_, i) => start + i);
 
 export const parseUnitNum = (timeStr: string) =>
-    Number(timeStr.substring(0, timeStr.length - 3));
+    Number(timeStr.substring(0, timeStr.length - 3).replace(',', ''));
