@@ -1,5 +1,5 @@
 <script lang="ts">
-import BenchBarChart, { BarChartDisplayMode } from './BenchBarChart.svelte';
+import { BarChartDisplayMode } from './BenchBarChart.svelte';
 import BenchmarkIndex from './BenchmarkIndex.svelte';
 import BenchTable from './BenchTable.svelte';
 import ChartContainer from './ChartContainer.svelte';

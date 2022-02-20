@@ -1,5 +1,4 @@
 <script lang="ts">
-import BenchBarChart from './BenchBarChart.svelte';
 import BenchBarChart, {
     BarChartDisplayMode,
     cycleEnumValues,
@@ -20,11 +19,6 @@ let cycleDisplay = () => {
         activeDisplaymode
     );
 };
-
-let computedChartClass = '';
-// setTimeout(() => {
-//     computedChartClass = 'loaded';
-// }, 100);
 </script>
 
 <div class="chart_container">
@@ -35,17 +29,4 @@ let computedChartClass = '';
 </div>
 
 <style>
-.chart_container {
-    /* --gap: 4px;
-    --gap-count: 1;
-    --action-height: 32px; */
-
-    /* display: grid; */
-    /* grid-template-rows: var(--action-height) 1fr; */
-    /* gap: 4px; */
-    /* height: 320px; */
-    /* width: 100%; */
-    /* align-items: center; */
-    /* overflow: hidden; */
-}
 </style>

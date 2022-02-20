@@ -101,8 +101,6 @@ const dataCols: [string, ...c3.PrimitiveArray][] = [
 ];
 
 let dataToRender = dataCols;
-// let displayMode: string = '00default'; // eq "00default" or `benchName`
-let absoluteDisplayMode = true;
 
 console.log(dataCols);
 var chartApi: c3.ChartAPI;
