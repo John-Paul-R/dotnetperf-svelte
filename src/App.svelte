@@ -18,10 +18,12 @@ fetch(
             method: 'GET',
         }
     )
-).then(async (data) => {
-    csvString = await data.text();
-    csvRows = csvAsRows(csvString);
-});
+)
+    .then(async (data) => {
+        csvString = await data.text();
+        csvRows = csvAsRows(csvString);
+    })
+    .catch(console.error);
 </script>
 
 <div id="page_container">

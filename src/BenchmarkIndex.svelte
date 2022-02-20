@@ -1,6 +1,6 @@
 <script lang="ts">
 let filesList: string[];
-export let asDropdown: boolean = false;
+export let asDropdown = false;
 
 fetch('https://static.jpcode.dev/benchmarks/dotnet/files.json', {
     method: 'GET',

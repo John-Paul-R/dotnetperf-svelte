@@ -30,7 +30,7 @@ export function colsAsCsv(cols: string[][]) {
     return csv;
 }
 
-export function transpose(matrix) {
+export function transpose(matrix: any[][]) {
     const rows = matrix.length,
         cols = matrix[0].length;
     const grid = [];

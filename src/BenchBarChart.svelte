@@ -103,7 +103,7 @@ const dataCols: [string, ...c3.PrimitiveArray][] = [
 let dataToRender = dataCols;
 
 console.log(dataCols);
-var chartApi: c3.ChartAPI;
+let chartApi: c3.ChartAPI | undefined;
 if (!chartApi) {
     setTimeout(() => {
         chartApi = c3.generate({
@@ -148,12 +148,13 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
                 return dataCols;
             case BarChartDisplayMode.Relative:
                 return buildDataCols();
-                defaut: throw new Error('BarChartDisplayMode out of range.');
+                throw new Error('BarChartDisplayMode out of range.');
         }
     })();
 
     chartApi.load({
         data: {
+            // @ts-expect-error It seems that c3 has the wrong type expectation here.
             keys: dataCols.map((arr) => arr[0]),
             rows: (() => {
                 // Maps data cols to 'rows' format that c3 expects here. (columns was erroring for reasons I could not determine)
@@ -176,7 +177,7 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
     console.log('Rerender!');
     // Handles necessary resizing after data update (idk why needed, but trust)
     // This is done via setTimeout to allow the normal "data update" animation to play out.
-    setTimeout(() => chartApi.resize());
+    setTimeout(() => chartApi?.resize());
 };
 
 $: updateRenderDataByDisplayMode(displayMode);
