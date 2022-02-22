@@ -75,6 +75,10 @@ $: if (benchmarkId) {
 
     <main id="content_main">
         {#if hasSpecifiedBenchmark}
+            <a
+                href="http://github.com/John-Paul-R/dotnetperf-benchmarks/tree/master/{benchmarkId}/Program.cs"
+                >View Benchmark Source</a
+            >
             {#if !csvString}
                 Loading benchmark data...
             {:else}
