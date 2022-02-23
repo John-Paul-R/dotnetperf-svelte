@@ -3,5 +3,6 @@ export const range = (start: number, end: number) =>
         .fill(null)
         .map((_, i) => start + i);
 
+const numberWithUnitRegex = /([0-9,\.]+)\s?(\S+)/;
 export const parseUnitNum = (timeStr: string) =>
-    Number(timeStr.substring(0, timeStr.length - 3).replace(',', ''));
+    Number(timeStr.match(numberWithUnitRegex)?.[1]?.replace(',', ''));
