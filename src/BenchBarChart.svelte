@@ -2,7 +2,7 @@
 import * as c3 from 'c3';
 import { BarChartDisplayMode, DataColName } from './BenchBarChart.types';
 import { transpose } from './csv_parse';
-import { parseUnitNum } from './util';
+import { parseUnit, parseUnitNum } from './util';
 
 export let csvRows: string[][];
 export let dataColName: DataColName;
@@ -27,7 +27,8 @@ const headerRow: string[] = rows[0];
 
 const BenchNameIdx = 0;
 const JobVersionIdx = 1;
-const MaxItemsIdx = headerRow.indexOf('MaxItems');
+const BenchmarkVariableName = 'MaxItems';
+const MaxItemsIdx = headerRow.indexOf(BenchmarkVariableName);
 const MeanTimeIdx = headerRow.indexOf(dataColName);
 
 let chart: HTMLDivElement;
@@ -85,14 +86,25 @@ const dataCols: [string, ...c3.PrimitiveArray][] = [
 ];
 
 let dataToRender = dataCols;
-
-console.log(dataCols);
+const seriesUnits = parseUnit(rows[1][MeanTimeIdx]);
+const getYAxisTitle = (
+    displayMode: BarChartDisplayMode,
+    seriesUnits: string | undefined
+) => {
+    if (displayMode === BarChartDisplayMode.Absolute && seriesUnits) {
+        return `${colNameToDisplayName[dataColName]} (${seriesUnits})`;
+    }
+    if (displayMode === BarChartDisplayMode.Relative) {
+        return `${colNameToDisplayName[dataColName]} (relative)`;
+    }
+    return colNameToDisplayName[dataColName];
+};
 let chartApi: c3.ChartAPI | undefined;
 if (!chartApi) {
     setTimeout(() => {
         chartApi = c3.generate({
             title: {
-                text: colNameToDisplayName[dataColName],
+                text: `${colNameToDisplayName[dataColName]} by ${BenchmarkVariableName}`,
             },
             data: {
                 x: 'x',
@@ -161,6 +173,11 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
                 );
             })(),
         },
+    });
+
+    chartApi.axis.labels({
+        y: getYAxisTitle(displayMode, seriesUnits),
+        x: BenchmarkVariableName,
     });
     console.log('Rerender!');
     // Handles necessary resizing after data update (idk why needed, but trust)
