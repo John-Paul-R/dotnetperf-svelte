@@ -6,13 +6,18 @@ import ChartContainer from './ChartContainer.svelte';
 import { csvAsRows } from './csv_parse';
 import { readCsvFile } from './csv_reader';
 import DragDropFileInput from './DragDropFileInput.svelte';
-const urlParams = new URLSearchParams(window.location.search);
+$: urlParams = new URLSearchParams(window.location.search);
 $: hasSpecifiedBenchmark = urlParams.has('bench') || csvRows != undefined;
 
 $: benchmarkId = urlParams.get('bench');
 
 $: csvString = undefined as unknown as string; //: string;
 $: csvRows = undefined as unknown as string[][]; //: string[][];
+
+$: if (!urlParams.has('bench')) {
+    csvString = undefined as unknown as string; //: string;
+    csvRows = undefined as unknown as string[][]; //: string[][];
+}
 $: if (benchmarkId && benchmarkId !== 'file') {
     fetch(
         new Request(
@@ -28,6 +33,13 @@ $: if (benchmarkId && benchmarkId !== 'file') {
         })
         .catch(console.error);
 }
+
+(function () {
+    window.addEventListener('popstate', function (event) {
+        // The URL changed...
+        urlParams = new URLSearchParams(window.location.search);
+    });
+})();
 
 $: if (benchmarkId == 'file' && csvRows === undefined) {
     if ('URLSearchParams' in window) {
