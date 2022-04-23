@@ -31,7 +31,6 @@ function handleDrop(e: any) {
     input.files = files;
     fireOnChange(input);
     // handleFiles(files);
-    onSelect(files[0]);
     unhighlight();
 }
 
@@ -50,12 +49,11 @@ function unhighlight() {
 }
 
 function fireOnChange(element: any) {
-    if ('createEvent' in document) {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('change', false, true);
-        element.dispatchEvent(evt);
-    } else element.fireEvent('onchange');
+    element.dispatchEvent(new Event('change'));
 }
+const handleChange = (e: Event) => {
+    onSelect((e.target as any).files[0]);
+};
 </script>
 
 <div
@@ -72,6 +70,7 @@ function fireOnChange(element: any) {
             id="benchmark_file_input"
             accept="text/csv"
             bind:this={input}
+            on:change={handleChange}
         />
     </form>
 </div>
