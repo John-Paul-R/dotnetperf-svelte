@@ -20,6 +20,9 @@ fetch('https://static.jpcode.dev/benchmarks/dotnet/files.json', {
 </script>
 
 <div class={asDropdown ? 'dropdown_sc-wrapper' : ''} id="site_sections">
+    {#if !asDropdown}
+        <div class="title">Benchmarks</div>
+    {/if}
     <ul
         class="files_list {asDropdown ? 'dropdown_sc-content' : ''}"
         role="menu"
@@ -40,5 +43,11 @@ fetch('https://static.jpcode.dev/benchmarks/dotnet/files.json', {
 <style>
 .dropdown_sc-wrapper {
     left: 0;
+}
+
+.title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
 }
 </style>

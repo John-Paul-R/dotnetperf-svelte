@@ -117,4 +117,8 @@ main {
     font-weight: 500;
     margin-left: 8px;
 }
+
+a {
+    width: fit-content;
+}
 </style>
