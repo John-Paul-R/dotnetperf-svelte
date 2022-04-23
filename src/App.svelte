@@ -4,14 +4,16 @@ import BenchmarkIndex from './BenchmarkIndex.svelte';
 import BenchTable from './BenchTable.svelte';
 import ChartContainer from './ChartContainer.svelte';
 import { csvAsRows } from './csv_parse';
+import { readCsvFile } from './csv_reader';
+import DragDropFileInput from './DragDropFileInput.svelte';
 const urlParams = new URLSearchParams(window.location.search);
-const hasSpecifiedBenchmark = urlParams.has('bench');
+$: hasSpecifiedBenchmark = urlParams.has('bench') || csvRows != undefined;
 
-export let benchmarkId = urlParams.get('bench');
+$: benchmarkId = urlParams.get('bench');
 
-let csvString: string;
-let csvRows: string[][];
-$: if (benchmarkId) {
+$: csvString = undefined as unknown as string; //: string;
+$: csvRows = undefined as unknown as string[][]; //: string[][];
+$: if (benchmarkId && benchmarkId !== 'file') {
     fetch(
         new Request(
             `https://static.jpcode.dev/benchmarks/dotnet/${benchmarkId}.Bench-report.csv`,
@@ -26,6 +28,35 @@ $: if (benchmarkId) {
         })
         .catch(console.error);
 }
+
+$: if (benchmarkId == 'file' && csvRows === undefined) {
+    if ('URLSearchParams' in window) {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.delete('bench');
+        const searchParamsString = searchParams.toString();
+        const urlQueryString =
+            searchParamsString.length > 0 ? `?${searchParamsString}` : '';
+        const newRelativePathQuery = window.location.pathname + urlQueryString;
+        history.pushState(null, '', newRelativePathQuery);
+        hasSpecifiedBenchmark = false;
+    }
+}
+
+const onSelectFile = async (file: File) => {
+    const fileResult = await readCsvFile(file);
+    if (fileResult) {
+        csvString = fileResult;
+        csvRows = csvAsRows(csvString);
+        if ('URLSearchParams' in window) {
+            var searchParams = new URLSearchParams(window.location.search);
+            searchParams.set('bench', 'file');
+            var newRelativePathQuery =
+                window.location.pathname + '?' + searchParams.toString();
+            history.pushState(null, '', newRelativePathQuery);
+        }
+    }
+    return undefined;
+};
 </script>
 
 <div id="page_container">
@@ -99,9 +130,11 @@ $: if (benchmarkId) {
         {:else if hasSpecifiedBenchmark === false}
             No benchmark id present in query string.
             <BenchmarkIndex />
+            <DragDropFileInput onSelect={onSelectFile} />
         {:else}
             No benchmark with id '{benchmarkId}' found.
             <BenchmarkIndex />
+            <DragDropFileInput onSelect={onSelectFile} />
         {/if}
     </main>
 </div>

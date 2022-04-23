@@ -2,6 +2,7 @@
 import { onMount } from 'svelte';
 let dropArea: HTMLDivElement;
 let input: HTMLInputElement;
+export let onSelect: (file: File) => void | Promise<void>;
 
 let highlighted = false;
 onMount(() => {
@@ -30,6 +31,7 @@ function handleDrop(e: any) {
     input.files = files;
     fireOnChange(input);
     // handleFiles(files);
+    onSelect(files[0]);
     unhighlight();
 }
 
