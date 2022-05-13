@@ -27,9 +27,16 @@ const headerRow: string[] = rows[0];
 
 const BenchNameIdx = 0;
 const JobVersionIdx = 1;
-const BenchmarkVariableName = 'MaxItems';
-const MaxItemsIdx = headerRow.indexOf(BenchmarkVariableName);
-const MeanTimeIdx = headerRow.indexOf(dataColName);
+const DataColIdx = headerRow.indexOf(dataColName);
+const MeanTimeIdx = headerRow.indexOf('Mean');
+const BenchmarkVariableIdx =
+    headerRow.at(MeanTimeIdx - 1) === 'WarmupCount'
+        ? undefined
+        : MeanTimeIdx - 1;
+const BenchmarkVariableName = BenchmarkVariableIdx
+    ? headerRow.at(BenchmarkVariableIdx)
+    : undefined;
+// const MaxItemsIdx = headerRow.indexOf(BenchmarkVariableName);
 
 let chart: HTMLDivElement;
 
@@ -37,7 +44,7 @@ const benchMeanTimes = rows
     .slice(1)
     .map<[string, number]>((row) => [
         row[BenchNameIdx],
-        parseUnitNum(row[MeanTimeIdx]),
+        parseUnitNum(row[DataColIdx]),
     ])
     .reduce((accum, current) => {
         const [benchName, benchVal] = current;
@@ -46,8 +53,8 @@ const benchMeanTimes = rows
     }, {} as { [key: string]: number[] });
 
 const maxItems: c3.PrimitiveArray =
-    MaxItemsIdx != -1
-        ? [...new Set(cols[MaxItemsIdx].slice(1))]
+    BenchmarkVariableIdx !== undefined
+        ? [...new Set(cols[BenchmarkVariableIdx].slice(1))]
               .map(Number)
               .sort((a, b) => a - b)
         : ['All'];
@@ -86,7 +93,7 @@ const dataCols: [string, ...c3.PrimitiveArray][] = [
 ];
 
 let dataToRender = dataCols;
-const seriesUnits = parseUnit(rows[1][MeanTimeIdx]);
+const seriesUnits = parseUnit(rows[1][DataColIdx]);
 const getYAxisTitle = (
     displayMode: BarChartDisplayMode,
     seriesUnits: string | undefined
