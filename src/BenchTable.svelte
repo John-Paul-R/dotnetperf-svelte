@@ -12,8 +12,9 @@ const fullHeaderRow = rows[0];
 
 const BenchNameIdx = 0;
 const JobVersionIdx = 1;
-const MaxItemsIdx = fullHeaderRow.indexOf('MaxItems');
 const MeanTimeIdx = fullHeaderRow.indexOf('Mean');
+const BenchmarkVariableIdx =
+    fullHeaderRow.at(MeanTimeIdx - 1) === 'WarmupCount' ? -1 : MeanTimeIdx - 1;
 
 let headerRowToRender: string[] = [];
 let rowsToRender: string[][] = [];
@@ -21,7 +22,7 @@ let rowsToRender: string[][] = [];
     const filteredCols = filterCols(cols, [
         BenchNameIdx,
         JobVersionIdx,
-        MaxItemsIdx,
+        BenchmarkVariableIdx,
         ...range(MeanTimeIdx, getEndRowIdx(fullHeaderRow)),
     ]);
 
