@@ -107,15 +107,17 @@ const buildDataColsPerValue = () => {
         }
     }
 
+    // This normalization is not really needed (and causes us to lose info)
+    //   Without it, each data point is the Value per BenchmarkVar (e.g. Mean Time per Item)
     // normalize (max val 1)
-    for (let k = 1; k <= maxItems.length; k++) {
-        for (let j = 0; j < data.length; j++) {
-            data[j][k] = (data[j][k] as number) / maxValue;
-            if (Number.isNaN(data[j][k])) {
-                console.log(j, k, data[j][k]);
-            }
-        }
-    }
+    // for (let k = 1; k <= maxItems.length; k++) {
+    //     for (let j = 0; j < data.length; j++) {
+    //         data[j][k] = (data[j][k] as number) / maxValue;
+    //         if (Number.isNaN(data[j][k])) {
+    //             console.log(j, k, data[j][k]);
+    //         }
+    //     }
+    // }
 
     return [['x', ...maxItems], ...data];
 };
