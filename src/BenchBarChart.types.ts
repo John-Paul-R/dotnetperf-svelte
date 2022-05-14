@@ -2,6 +2,7 @@ export type DataColName = 'Mean' | 'Median' | 'Allocated';
 export enum BarChartDisplayMode {
     Absolute,
     Relative,
+    PerValue,
 }
 export const maxDisplayModeIdx = Object.keys(BarChartDisplayMode).length;
 /**

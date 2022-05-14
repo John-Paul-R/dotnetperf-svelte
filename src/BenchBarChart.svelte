@@ -36,7 +36,6 @@ const BenchmarkVariableIdx =
 const BenchmarkVariableName = BenchmarkVariableIdx
     ? headerRow.at(BenchmarkVariableIdx)
     : undefined;
-// const MaxItemsIdx = headerRow.indexOf(BenchmarkVariableName);
 
 let chart: HTMLDivElement;
 
@@ -79,6 +78,42 @@ const buildDataCols = () => {
         const multiplier = maxVal / maxInSet;
         for (let j = 0; j < data.length; j++) {
             data[j][i] = ((data[j][i] as number) * multiplier) / maxVal; // out of 1
+        }
+    }
+
+    return [['x', ...maxItems], ...data];
+};
+
+const buildDataColsPerValue = () => {
+    const data = [
+        ...Object.entries(benchMeanTimes).map<[string, ...number[]]>(
+            ([benchName, benchData]) => [benchName, ...benchData]
+        ),
+    ];
+
+    let maxValue = 0;
+    for (let k = 1; k <= maxItems.length; k++) {
+        const benchVarValue = maxItems[k - 1] as number;
+
+        console.log('bench Var value:', benchVarValue);
+        for (let j = 0; j < data.length; j++) {
+            console.log(`data`, j, k, data[j][k]);
+            const newValue = (data[j][k] as number) / benchVarValue;
+            data[j][k] = newValue;
+
+            if (newValue > maxValue) {
+                maxValue = newValue;
+            }
+        }
+    }
+
+    // normalize (max val 1)
+    for (let k = 1; k <= maxItems.length; k++) {
+        for (let j = 0; j < data.length; j++) {
+            data[j][k] = (data[j][k] as number) / maxValue;
+            if (Number.isNaN(data[j][k])) {
+                console.log(j, k, data[j][k]);
+            }
         }
     }
 
@@ -151,6 +186,8 @@ const updateRenderDataByDisplayMode = (displayMode: BarChartDisplayMode) => {
                 return dataCols;
             case BarChartDisplayMode.Relative:
                 return buildDataCols();
+            case BarChartDisplayMode.PerValue:
+                return buildDataColsPerValue();
             default:
                 throw new Error('BarChartDisplayMode out of range.');
         }

@@ -20,11 +20,25 @@ let cycleDisplay = () => {
         activeDisplaymode as number
     );
 };
+
+const displayModeDisplayName = (displayMode: BarChartDisplayMode) => {
+    switch (activeDisplaymode) {
+        case BarChartDisplayMode.Absolute:
+            return 'Absolute';
+        case BarChartDisplayMode.Relative:
+            return 'Normalized Maximums';
+        case BarChartDisplayMode.PerValue:
+            return 'Per [Bench Variable]';
+    }
+};
 </script>
 
 <div class="chart_container">
     <div class="actions_container">
         <button class="button" on:click={cycleDisplay}>Scale</button>
+        <div>
+            Mode: <span>{displayModeDisplayName(activeDisplaymode)}</span>
+        </div>
     </div>
     <BenchBarChart {csvRows} {dataColName} displayMode={activeDisplaymode} />
 </div>
