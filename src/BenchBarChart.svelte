@@ -148,7 +148,9 @@ if (!chartApi) {
     setTimeout(() => {
         chartApi = c3.generate({
             title: {
-                text: `${colNameToDisplayName[dataColName]} by ${BenchmarkVariableName}`,
+                text: `${colNameToDisplayName[dataColName]} ${
+                    seriesUnits ? `(${seriesUnits}) ` : ''
+                }by ${BenchmarkVariableName}`,
             },
             data: {
                 x: 'x',
