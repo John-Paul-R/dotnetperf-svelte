@@ -50,4 +50,7 @@ fetch('https://static.jpcode.dev/benchmarks/dotnet/files.json', {
     font-weight: 500;
     margin-bottom: 0.2rem;
 }
+.dropdown_sc-content > * {
+    font-weight: unset;
+}
 </style>
