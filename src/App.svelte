@@ -79,7 +79,11 @@ const onSelectFile = async (file: File) => {
             aria-label="jpcode.dev"
             aria-owns="title_link"
         >
-            <div>
+            <div class="title_start_container">
+                <a class="button" href="./"
+                    ><span class="material-icons">home</span></a
+                >
+                <BenchmarkIndex asDropdown />
                 <button
                     class="dropdown_sc-button reset_button benchmarks_button"
                     id="site_sections-btn"
@@ -90,7 +94,6 @@ const onSelectFile = async (file: File) => {
                     Benchmarks
                     <span class="material-icons"> arrow_drop_down </span>
                 </button>
-                <BenchmarkIndex asDropdown />
             </div>
             <div>
                 <h4>
@@ -167,5 +170,9 @@ main {
 
 a {
     width: fit-content;
+}
+
+.title_start_container {
+    display: inline-flex;
 }
 </style>
