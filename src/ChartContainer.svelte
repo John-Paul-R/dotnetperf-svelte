@@ -22,7 +22,7 @@ let cycleDisplay = () => {
 };
 
 const displayModeDisplayName = (displayMode: BarChartDisplayMode) => {
-    switch (activeDisplaymode) {
+    switch (displayMode) {
         case BarChartDisplayMode.Absolute:
             return 'Absolute';
         case BarChartDisplayMode.Relative:

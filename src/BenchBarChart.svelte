@@ -150,7 +150,7 @@ if (!chartApi) {
             title: {
                 text: `${colNameToDisplayName[dataColName]} ${
                     seriesUnits ? `(${seriesUnits}) ` : ''
-                }by ${BenchmarkVariableName}`,
+                }${BenchmarkVariableName ? `by ${BenchmarkVariableName}` : ''}`,
             },
             data: {
                 x: 'x',
