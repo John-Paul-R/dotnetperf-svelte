@@ -44,7 +44,7 @@ let rowsToRender: string[][] = [];
             {#each [...rowsToRender] as row}
                 <tr>
                     {#each row as el}
-                        <td>{el}</td>
+                        <td class="value_td">{el}</td>
                     {/each}
                 </tr>
             {/each}
@@ -64,5 +64,9 @@ th {
 }
 tr:nth-child(even) {
     background-color: var(--color-base-2);
+}
+
+.value_td {
+    text-align: end;
 }
 </style>
